@@ -1,10 +1,10 @@
-const fetch = require("node-fetch");
-
 const authMiddleware = async (req, res, next) => {
   const token = req.headers["authorization"]?.split(" ")[1];
   if (!token) return res.status(401).json({ error: "No token provided" });
 
   try {
+    const fetchModule = await import("node-fetch");
+    const fetch = fetchModule.default;
     const response = await fetch(`${process.env.AUTH_SERVICE_URL}/verify`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
