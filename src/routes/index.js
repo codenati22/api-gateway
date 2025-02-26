@@ -10,6 +10,7 @@ const router = express.Router();
 router.use("/auth", proxyToAuth);
 
 router.get("/streams", proxyToStreams);
-router.use("/streams", authMiddleware, proxyToStreams);
+
+router.post("/streams/start-stream", authMiddleware, proxyToStreams);
 
 module.exports = router;
