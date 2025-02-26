@@ -1,12 +1,10 @@
-import { Router } from "express";
+const express = require("express");
 const { proxyRequest } = require("../controllers/proxyController");
-const authMiddleware = require("../middleware/auth");
 
-const router = Router();
+const router = express.Router();
 
-router.use(authMiddleware);
 router.all("*", (req, res) =>
   proxyRequest(req, res, process.env.STREAM_SERVICE_URL)
 );
 
-export default router;
+module.exports = router;

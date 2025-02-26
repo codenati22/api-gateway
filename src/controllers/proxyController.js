@@ -1,17 +1,18 @@
 const fetch = require("node-fetch");
 
-// Proxy request to a target service
-const proxyToService = async (req, res, serviceUrl) => {
-  const url = `${serviceUrl}${req.url}`;
+const proxyRequest = async (req, res, baseUrl) => {
+  const url = `${baseUrl}${req.url}`;
+  const options = {
+    method: req.method,
+    headers: { "Content-Type": "application/json", ...req.headers },
+  };
+
+  if (req.method !== "GET" && req.method !== "HEAD" && req.body) {
+    options.body = JSON.stringify(req.body);
+  }
+
   try {
-    const response = await fetch(url, {
-      method: req.method,
-      body: req.body ? JSON.stringify(req.body) : undefined,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: req.headers["authorization"] || "", // Pass auth header if present
-      },
-    });
+    const response = await fetch(url, options);
     const data = await response.json();
     res.status(response.status).json(data);
   } catch (error) {
@@ -20,8 +21,8 @@ const proxyToService = async (req, res, serviceUrl) => {
 };
 
 const proxyToAuth = (req, res) =>
-  proxyToService(req, res, process.env.AUTH_SERVICE_URL);
+  proxyRequest(req, res, process.env.AUTH_SERVICE_URL);
 const proxyToStreams = (req, res) =>
-  proxyToService(req, res, process.env.STREAM_SERVICE_URL);
+  proxyRequest(req, res, process.env.STREAM_SERVICE_URL);
 
-module.exports = { proxyToAuth, proxyToStreams };
+module.exports = { proxyRequest, proxyToAuth, proxyToStreams };
