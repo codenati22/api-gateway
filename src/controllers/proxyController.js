@@ -46,7 +46,14 @@ const proxyRequest = async (req, res, baseUrl, stripPrefix = "") => {
 
 const proxyToAuth = (req, res) =>
   proxyRequest(req, res, process.env.AUTH_SERVICE_URL, "/auth");
-const proxyToStreams = (req, res) =>
-  proxyRequest(req, res, process.env.STREAM_SERVICE_URL, "/streams");
+const proxyToStreams = (req, res) => {
+  const urlPath = req.url === "/streams" ? "/streams" : "/start-stream";
+  return proxyRequest(
+    req,
+    res,
+    process.env.STREAM_SERVICE_URL,
+    urlPath === "/streams" ? "" : "/streams"
+  );
+};
 
 module.exports = { proxyRequest, proxyToAuth, proxyToStreams };
