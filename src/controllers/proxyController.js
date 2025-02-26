@@ -11,13 +11,14 @@ const proxyRequest = async (req, res, baseUrl, stripPrefix = "") => {
   const options = {
     method: req.method,
     headers: {
-      ...req.headers,
-      "content-type": req.headers["content-type"] || "application/json",
+      "Content-Type": req.headers["content-type"] || "application/json",
+      Authorization: req.headers["authorization"] || "",
     },
   };
 
   if (req.method !== "GET" && req.method !== "HEAD" && req.body) {
     options.body = JSON.stringify(req.body);
+    console.log(`Sending body: ${options.body}`);
   }
 
   try {
