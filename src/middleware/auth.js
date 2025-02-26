@@ -5,7 +5,9 @@ const authMiddleware = async (req, res, next) => {
   try {
     const fetchModule = await import("node-fetch");
     const fetch = fetchModule.default;
-    const response = await fetch(`${process.env.AUTH_SERVICE_URL}/verify`, {
+    const verifyUrl = `${process.env.AUTH_SERVICE_URL}/verify`;
+    console.log(`Verifying token at: ${verifyUrl}`);
+    const response = await fetch(verifyUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
@@ -19,6 +21,7 @@ const authMiddleware = async (req, res, next) => {
     req.user = result.user;
     next();
   } catch (error) {
+    console.error("Auth middleware error:", error);
     res.status(500).json({ error: "Authentication failed" });
   }
 };
