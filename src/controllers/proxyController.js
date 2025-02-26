@@ -19,15 +19,20 @@ const proxyRequest = async (req, res, baseUrl) => {
   try {
     const response = await fetch(url, options);
     const text = await response.text();
-    let data;
+    console.log(`Response from ${url}:`, text);
 
-    if (text) {
-      data = JSON.parse(text);
+    if (
+      response.headers.get("content-type")?.includes("application/json") &&
+      text
+    ) {
+      const data = JSON.parse(text);
+      res.status(response.status).json(data);
     } else {
-      data = {};
+      console.error(`Non-JSON response from ${url}:`, text);
+      res
+        .status(response.status)
+        .send({ error: "Unexpected response", raw: text });
     }
-
-    res.status(response.status).json(data);
   } catch (error) {
     console.error("Proxy error:", error);
     res.status(500).json({ error: error.message });
