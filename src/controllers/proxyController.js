@@ -1,14 +1,12 @@
 const fetch = require("node-fetch");
 
-const proxyRequest = async (req, res, baseUrl) => {
-  const url = `${baseUrl}${req.url}`;
+const proxyRequest = async (req, res, baseUrl, stripPrefix = "") => {
+  const url = `${baseUrl}${req.url.replace(stripPrefix, "")}`;
   const options = {
     method: req.method,
     headers: {
-      "Content-Type": "application/json",
-      ...(req.method === "POST" && {
-        Authorization: req.headers.authorization || "",
-      }),
+      ...req.headers,
+      "content-type": req.headers["content-type"] || "application/json",
     },
   };
 
@@ -42,6 +40,6 @@ const proxyRequest = async (req, res, baseUrl) => {
 const proxyToAuth = (req, res) =>
   proxyRequest(req, res, process.env.AUTH_SERVICE_URL);
 const proxyToStreams = (req, res) =>
-  proxyRequest(req, res, process.env.STREAM_SERVICE_URL);
+  proxyRequest(req, res, process.env.STREAM_SERVICE_URL, "/streams");
 
 module.exports = { proxyRequest, proxyToAuth, proxyToStreams };
