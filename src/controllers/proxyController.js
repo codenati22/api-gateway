@@ -6,7 +6,9 @@ const proxyRequest = async (req, res, baseUrl) => {
     method: req.method,
     headers: {
       "Content-Type": "application/json",
-      Authorization: req.headers.authorization || "",
+      ...(req.method === "POST" && {
+        Authorization: req.headers.authorization || "",
+      }),
     },
   };
 
@@ -17,13 +19,15 @@ const proxyRequest = async (req, res, baseUrl) => {
   try {
     const response = await fetch(url, options);
     const text = await response.text();
+    let data;
 
-    if (response.headers.get("content-type")?.includes("application/json")) {
-      const data = JSON.parse(text);
-      res.status(response.status).json(data);
+    if (text) {
+      data = JSON.parse(text);
     } else {
-      res.status(response.status).send(text);
+      data = {};
     }
+
+    res.status(response.status).json(data);
   } catch (error) {
     console.error("Proxy error:", error);
     res.status(500).json({ error: error.message });
