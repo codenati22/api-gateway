@@ -1,7 +1,8 @@
 const fetch = require("node-fetch");
 
-const proxyRequest = async (req, res, baseUrl, stripPrefix = "") => {
-  const url = `${baseUrl}${req.url.replace(stripPrefix, "")}`;
+const proxyRequest = async (req, res, baseUrl) => {
+  const url = `${baseUrl}${req.url}`;
+  console.log(`Proxying to: ${url}`);
   const options = {
     method: req.method,
     headers: {
@@ -40,6 +41,6 @@ const proxyRequest = async (req, res, baseUrl, stripPrefix = "") => {
 const proxyToAuth = (req, res) =>
   proxyRequest(req, res, process.env.AUTH_SERVICE_URL);
 const proxyToStreams = (req, res) =>
-  proxyRequest(req, res, process.env.STREAM_SERVICE_URL, "/streams");
+  proxyRequest(req, res, process.env.STREAM_SERVICE_URL);
 
 module.exports = { proxyRequest, proxyToAuth, proxyToStreams };

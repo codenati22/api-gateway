@@ -7,10 +7,11 @@ const {
 
 const router = express.Router();
 
-router.use("/auth", proxyToAuth);
+router.post("/auth/signup", proxyToAuth);
+router.post("/auth/login", proxyToAuth);
+router.post("/auth/verify", proxyToAuth);
 
 router.get("/streams", proxyToStreams);
-
 router.post("/streams/start-stream", authMiddleware, proxyToStreams);
 
 module.exports = router;
