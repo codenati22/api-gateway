@@ -2,7 +2,11 @@ const fetch = require("node-fetch");
 
 const proxyRequest = async (req, res, baseUrl) => {
   const url = `${baseUrl}${req.url}`;
+  console.log(`Request URL: ${req.url}`);
   console.log(`Proxying to: ${url}`);
+  console.log(`Method: ${req.method}, Headers: ${JSON.stringify(req.headers)}`);
+  console.log(`Body: ${JSON.stringify(req.body || {})}`);
+
   const options = {
     method: req.method,
     headers: {
@@ -18,6 +22,7 @@ const proxyRequest = async (req, res, baseUrl) => {
   try {
     const response = await fetch(url, options);
     const text = await response.text();
+    console.log(`Response Status: ${response.status}`);
     console.log(`Response from ${url}:`, text);
 
     if (
