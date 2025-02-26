@@ -3,10 +3,10 @@ const fetch = require("node-fetch");
 const proxyRequest = async (req, res, baseUrl, stripPrefix = "") => {
   const urlPath = stripPrefix ? req.url.replace(stripPrefix, "") : req.url;
   const url = `${baseUrl}${urlPath}`;
-  console.log(`Request URL: ${req.url}`);
-  console.log(`Proxying to: ${url}`);
-  console.log(`Method: ${req.method}, Headers: ${JSON.stringify(req.headers)}`);
-  console.log(`Body: ${JSON.stringify(req.body || {})}`);
+  // console.log(`Request URL: ${req.url}`);
+  // console.log(`Proxying to: ${url}`);
+  // console.log(`Method: ${req.method}, Headers: ${JSON.stringify(req.headers)}`);
+  // console.log(`Body: ${JSON.stringify(req.body || {})}`);
 
   const options = {
     method: req.method,
